@@ -1,64 +1,79 @@
 package service.broccolli.market
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import service.broccolli.market.databinding.ActivityMainBinding
+import service.firebase.UserDataRepositoryDelegate
+import service.firebase.auth.FirebaseAuthDelegate
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setSupportActionBar(binding.toolbar)
-
-        val navController =
-            findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(
-                view,
-                "Replace with your own action",
-                Snackbar.LENGTH_LONG
-            )
-                .setAction("Action", null).show()
+        setContentView(R.layout.activity_main)
+        initialize()
+        if (FirebaseAuthDelegate.currentUser != null) {
+            // start main application
+        } else {
+            // start auth steps
+            startSignInActivity()
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+    private fun initialize() {
+        activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+                if (activityResult.resultCode != RESULT_OK) {
+                    return@registerForActivityResult
+                }
+                val intent =
+                    activityResult.data ?: return@registerForActivityResult
+                when (intent.getStringExtra("intent")) {
+                    "signIn" -> handleSignInActivity()
+                    "createUserData" -> handleCreateUserDataActivity()
+                }
+            }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+    private fun startSignInActivity() {
+        val intent = Intent(this, SignInActivity::class.java)
+        activityResultLauncher.launch(intent)
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController =
-            findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+    private fun handleSignInActivity() {
+        val authEmail = FirebaseAuthDelegate.currentUser!!.email!!
+        UserDataRepositoryDelegate.repository.get(authEmail)
+            .addOnSuccessListener(this) { result ->
+                if (!result.exists()) {
+                    startCreateUserDataActivity()
+                    return@addOnSuccessListener
+                }
+            }
+            .addOnFailureListener {
+                Log.w("BroccoliMarket", "user not found")
+            }
+    }
+
+    private fun startCreateUserDataActivity() {
+        val intent = Intent(this, CreateUserDataActivity::class.java)
+        activityResultLauncher.launch(intent)
+    }
+
+    private fun handleCreateUserDataActivity() {
+        val authEmail = FirebaseAuthDelegate.currentUser!!.email!!
+        UserDataRepositoryDelegate.repository.get(authEmail)
+            .addOnSuccessListener(this) { result ->
+                if (!result.exists()) {
+                    Log.w("BroccoliMarket", "user not found after registration")
+                    return@addOnSuccessListener
+                }
+            }
+            .addOnFailureListener {
+                Log.w("BroccoliMarket", "user not found")
+            }
     }
 }
