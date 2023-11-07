@@ -1,5 +1,6 @@
 package service.broccolli.market
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -50,8 +51,7 @@ class SignUpActivity : AppCompatActivity() {
             FirebaseAuthDelegate.createNewUser(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        intent.putExtra("email", email)
-                        setResult(RESULT_OK)
+                        setResult(RESULT_OK, Intent().putExtra("email", email))
                         finish()
                     } else {
                         val exception =
