@@ -7,59 +7,84 @@
     android:background="@color/light_green">
 
     <TextView
-        android:id="@+id/create_user_data_nickname_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="128dp"
-        android:text="닉네임"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/create_user_data_birthday_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="48dp"
+        android:fontFamily="sans-serif-black"
         android:text="생년월일"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_user_data_nickname_text_view" />
 
-    <EditText
-        android:id="@+id/create_user_data_nickname_edit_text"
+    <TextView
+        android:id="@+id/create_user_data_nickname_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="24dp"
-        android:ems="10"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/create_user_data_nickname_text_view"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="308dp"
+        android:fontFamily="sans-serif-black"
+        android:text="닉네임"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/create_user_data_birthday_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="246dp"
+        android:layout_height="40dp"
         android:layout_marginStart="92dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="24dp"
+        android:background="@drawable/edittextstyle"
+        android:elevation="40dp"
         android:ems="10"
         android:inputType="datetime|date"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/create_user_data_birthday_text_view"
         app:layout_constraintTop_toBottomOf="@+id/create_user_data_nickname_edit_text" />
 
+    <EditText
+        android:id="@+id/create_user_data_nickname_edit_text"
+        android:layout_width="246dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="296dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edittextstyle"
+        android:elevation="40dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/create_user_data_nickname_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/create_user_data_create_user_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="279dp"
+        android:layout_height="64dp"
         android:background="@drawable/buttonstyle"
+        android:fontFamily="sans-serif-black"
         android:text="만들기"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_user_data_birthday_edit_text" />
+        app:layout_constraintTop_toBottomOf="@+id/create_user_data_birthday_edit_text"
+        app:layout_constraintVertical_bias="0.821" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/create_user_data_nickname_edit_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.102"
+        app:srcCompat="@drawable/logo_market_broccolli_radius" />
 </androidx.constraintlayout.widget.ConstraintLayout>
