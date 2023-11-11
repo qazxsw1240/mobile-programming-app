@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import service.broccolli.util.EditTextUtil.Companion.addContentErrorMessageChecker
 import service.firebase.auth.FirebaseAuthDelegate
 
 class SignUpActivity : AppCompatActivity() {
@@ -20,31 +20,15 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
         initialize()
-
-        emailEditText.addTextChangedListener {
-            val content = it.toString()
-            val errorMessage = getEmailAddressErrorMessage(content)
-            if (errorMessage != null) {
-                emailEditText.error = errorMessage
-            }
-        }
-
-        passwordEditText.addTextChangedListener {
-            val content = it.toString()
-            val errorMessage = getPasswordErrorMessage(content)
-            if (errorMessage != null) {
-                passwordEditText.error = errorMessage
-            }
-        }
-
-        passwordCheckEditText.addTextChangedListener {
-            val content = it.toString()
+        emailEditText.addContentErrorMessageChecker(SignUpActivity::getEmailAddressErrorMessage)
+        passwordEditText.addContentErrorMessageChecker(SignUpActivity::getPasswordErrorMessage)
+        passwordCheckEditText.addContentErrorMessageChecker { content ->
             val password = passwordEditText.text.toString()
             if (password != content) {
-                passwordCheckEditText.error = "비밀번호가 일치하지 않습니다."
+                return@addContentErrorMessageChecker "비밀번호가 일치하지 않습니다."
             }
+            return@addContentErrorMessageChecker null
         }
-
         signUpButton.setOnClickListener {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
@@ -62,7 +46,6 @@ class SignUpActivity : AppCompatActivity() {
                     }
                 }
         }
-
         signUpCancelButton.setOnClickListener {
             setResult(RESULT_CANCELED)
             finish()
