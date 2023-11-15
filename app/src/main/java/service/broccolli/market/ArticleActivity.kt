@@ -2,8 +2,11 @@ package service.broccolli.market
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -21,6 +24,8 @@ import java.time.Instant
 import java.util.Date
 
 class ArticleActivity : AppCompatActivity() {
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
     private lateinit var articleTitleTextView: TextView
     private lateinit var articleAuthorTextView: TextView
     private lateinit var articleDateTextView: TextView
@@ -114,7 +119,7 @@ class ArticleActivity : AppCompatActivity() {
                 intent.putExtra("title", articleData.title)
                 intent.putExtra("price", articleData.price)
                 intent.putExtra("content", articleData.content)
-                startActivity(intent)
+                activityResultLauncher.launch(intent)
                 return@setOnClickListener
             }
             // start chat
@@ -122,6 +127,21 @@ class ArticleActivity : AppCompatActivity() {
     }
 
     private fun initialize() {
+        activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode != RESULT_OK) {
+                    return@registerForActivityResult
+                }
+                val articleId = intent.getStringExtra("articleId")
+                if (articleId == null) {
+                    Log.e(
+                        "BroccoliMarket",
+                        "Illegal Status in Edit: Not found article ID"
+                    )
+                    return@registerForActivityResult
+                }
+                setContents(articleId)
+            }
         articleTitleTextView = findViewById(R.id.article_title)
         articleAuthorTextView = findViewById(R.id.article_author)
         articlePriceTextView = findViewById(R.id.article_price)
