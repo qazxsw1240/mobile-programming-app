@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -13,24 +14,47 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.Query
 import service.broccolli.market.adapter.ArticleListItemAdapter
+import service.broccolli.market.fragment.ArticleFilterDialog
 import service.firebase.ArticleData
 import service.firebase.ArticleDataRepositoryDelegate
 import service.firebase.UserDataRepositoryDelegate
 import service.firebase.auth.FirebaseAuthDelegate
 import kotlin.math.min
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),
+    ArticleFilterDialog.ArticleFilterListener {
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerAdapter: ArticleListItemAdapter
 
+    private lateinit var articleFilterButton: Button
     private lateinit var articlePublishButton: FloatingActionButton
+
+    private var filterOption: Int = ArticleFilterDialog.FILTER_ALL_ARTICLES
+    private var minPrice: Int? = null
+    private var maxPrice: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initialize()
+
+        if (FirebaseAuthDelegate.currentUser != null) {
+            prepareArticles()
+        } else {
+            // start auth steps
+            startSignInActivity()
+            return
+        }
+
+        articleFilterButton.setOnClickListener {
+            ArticleFilterDialog()
+                .show(
+                    supportFragmentManager,
+                    "articleFilterDialog"
+                )
+        }
 
         articlePublishButton.setOnClickListener {
             startArticlePublishActivity()
@@ -43,36 +67,22 @@ class MainActivity : AppCompatActivity() {
                 newState: Int
             ) {
                 if (!recyclerView.canScrollVertically(1)) {
-                    val list = recyclerAdapter.getItemList()
-                    val lastItem = list.lastOrNull()
-                    if (lastItem == null) {
-                        prepareArticles()
-                        return
-                    }
-                    val maxCount = 10
-                    ArticleDataRepositoryDelegate.repository.collection
-                        .orderBy("uploadTime", Query.Direction.DESCENDING)
-                        .whereLessThan("uploadTime", lastItem.uploadTime)
-                        .limit(maxCount.toLong())
-                        .get()
-                        .addOnSuccessListener { snapshot ->
-                            val articleDataList =
-                                snapshot.map { ArticleData(it) }.toMutableList()
-                            attachArticles(articleDataList, false)
-                        }
-                        .addOnFailureListener {
-                            Log.e("BroccoliMarket", it.message.toString())
-                        }
+                    fetchArticles()
                 }
             }
         })
+    }
 
-        if (FirebaseAuthDelegate.currentUser != null) {
-            prepareArticles()
-        } else {
-            // start auth steps
-            startSignInActivity()
-        }
+    override fun onPositiveButtonClickListener(dialog: ArticleFilterDialog) {
+        filterOption = dialog.filterOption
+        minPrice = dialog.minPrice
+        maxPrice = dialog.maxPrice
+        println("$filterOption, $minPrice, $maxPrice")
+        prepareArticles()
+    }
+
+    override fun onNegativeButtonClickListener(dialog: ArticleFilterDialog) {
+
     }
 
     private fun initialize() {
@@ -86,12 +96,6 @@ class MainActivity : AppCompatActivity() {
                     "signIn" -> handleSignInActivity()
                     "createUserData" -> handleCreateUserDataActivity()
                     "articlePublish", "articleDelete" -> prepareArticles()
-                    "articleEdit" -> {
-                        val articleId = intent.getStringExtra("articleId")!!
-                        prepareArticles()
-                        startArticle(articleId)
-                    }
-
                     else -> prepareArticles()
                 }
             }
@@ -100,14 +104,10 @@ class MainActivity : AppCompatActivity() {
             ArticleListItemAdapter(activityResultLauncher, mutableListOf())
         recyclerView.layoutManager = RecyclerViewWrapperLayoutManager(this)
         recyclerView.adapter = recyclerAdapter
+        articleFilterButton =
+            findViewById(R.id.activity_main_article_filter_button)
         articlePublishButton =
             findViewById(R.id.activity_main_article_publish_button)
-    }
-
-    private fun startArticle(articleId: String) {
-        val intent = Intent(this, ArticleActivity::class.java)
-            .putExtra("articleId", articleId)
-        activityResultLauncher.launch(intent)
     }
 
     private fun startSignInActivity() {
@@ -153,10 +153,63 @@ class MainActivity : AppCompatActivity() {
         activityResultLauncher.launch(intent)
     }
 
+    private fun fetchArticles() {
+        val list = recyclerAdapter.getItemList()
+        val lastItem = list.lastOrNull()
+        if (lastItem == null) {
+            prepareArticles()
+            return
+        }
+        val maxCount = 10
+        var query = ArticleDataRepositoryDelegate.repository.collection
+            .orderBy("uploadTime", Query.Direction.DESCENDING)
+            .whereLessThan("uploadTime", lastItem.uploadTime)
+        when (filterOption) {
+            ArticleFilterDialog.FILTER_RESOLVED_ARTICLES ->
+                query = query.whereEqualTo("isResolved", true)
+
+            ArticleFilterDialog.FILTER_UNRESOLVED_ARTICLES ->
+                query = query.whereEqualTo("isResolved", false)
+
+        }
+        minPrice?.let {
+            query = query.whereGreaterThanOrEqualTo("price", it)
+        }
+        maxPrice?.let {
+            query = query.whereLessThanOrEqualTo("price", it)
+        }
+        query
+            .limit(maxCount.toLong())
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val articleDataList =
+                    snapshot.map { ArticleData(it) }.toMutableList()
+                attachArticles(articleDataList, false)
+            }
+            .addOnFailureListener {
+                Log.e("BroccoliMarket", it.message.toString())
+            }
+    }
+
     private fun prepareArticles() {
         val maxCount = 30
-        ArticleDataRepositoryDelegate.repository.collection
+        var query = ArticleDataRepositoryDelegate.repository.collection
             .orderBy("uploadTime", Query.Direction.DESCENDING)
+        when (filterOption) {
+            ArticleFilterDialog.FILTER_RESOLVED_ARTICLES ->
+                query = query.whereEqualTo("isResolved", true)
+
+            ArticleFilterDialog.FILTER_UNRESOLVED_ARTICLES ->
+                query = query.whereEqualTo("isResolved", false)
+
+        }
+        minPrice?.let {
+            query = query.whereGreaterThanOrEqualTo("price", it)
+        }
+        maxPrice?.let {
+            query = query.whereLessThanOrEqualTo("price", it)
+        }
+        query
             .limit(maxCount.toLong())
             .get()
             .addOnSuccessListener { snapshot ->
