@@ -64,7 +64,10 @@ data class ArticleData(
             val distance =
                 Period.between(dateLocal.toLocalDate(), nowLocal.toLocalDate())
             if (distance.days < 1) {
-                return dateLocal.format(DateTimeFormatter.ofPattern("HH:mm"))
+                return dateLocal.format(DateTimeFormatter.ofPattern("오늘 HH:mm"))
+            }
+            if (distance.days == 1) {
+                return dateLocal.format(DateTimeFormatter.ofPattern("어제 HH:mm"))
             }
             if (distance.years < 1) {
                 return dateLocal.format(DateTimeFormatter.ofPattern("M월 d일 HH:mm"))
