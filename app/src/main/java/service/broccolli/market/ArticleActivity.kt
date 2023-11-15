@@ -23,9 +23,11 @@ class ArticleActivity : AppCompatActivity() {
     private lateinit var articleTitleTextView: TextView
     private lateinit var articleAuthorTextView: TextView
     private lateinit var articleDateTextView: TextView
+    private lateinit var articlePriceTextView: TextView
     private lateinit var articleContentTextView: TextView
     private lateinit var articleBackButton: Button
     private lateinit var articleDeleteButton: Button
+    private lateinit var articleResolveButton: Button
     private lateinit var articleActionButton: FloatingActionButton
 
     private lateinit var articleData: ArticleData
@@ -44,32 +46,7 @@ class ArticleActivity : AppCompatActivity() {
             return
         }
 
-        CoroutineScope(Dispatchers.Default).launch {
-            val snapshot = ArticleDataRepositoryDelegate
-                .repository
-                .collection
-                .document(articleId)
-                .get()
-                .await()
-            articleData = ArticleData(snapshot)
-            val author =
-                UserDataRepositoryDelegate.repository
-                    .get(articleData.authorEmail)
-                    .await()
-            userData = UserData(author)
-            runOnUiThread {
-                articleTitleTextView.text = articleData.title
-                articleAuthorTextView.text = userData.nickname
-                articleDateTextView.text = ArticleData.formatDate(
-                    Date.from(Instant.now()),
-                    articleData.uploadTime
-                )
-                articleContentTextView.text = articleData.content
-                if (userData.email == articleData.authorEmail) {
-                    articleDeleteButton.isVisible = true
-                }
-            }
-        }
+        setContents(articleId)
 
         articleBackButton.setOnClickListener {
             setResult(RESULT_OK)
@@ -88,6 +65,22 @@ class ArticleActivity : AppCompatActivity() {
                             .putExtra("articleId", articleId)
                     )
                     finish()
+                }
+        }
+
+        articleResolveButton.setOnClickListener {
+            ArticleDataRepositoryDelegate.repository
+                .update(
+                    articleId,
+                    articleData.title,
+                    articleData.authorEmail,
+                    articleData.content,
+                    articleData.price,
+                    true,
+                    articleData.uploadTime
+                )
+                .addOnSuccessListener {
+                    setContents(articleId)
                 }
         }
 
@@ -112,10 +105,46 @@ class ArticleActivity : AppCompatActivity() {
     private fun initialize() {
         articleTitleTextView = findViewById(R.id.article_title)
         articleAuthorTextView = findViewById(R.id.article_author)
+        articlePriceTextView = findViewById(R.id.article_price)
         articleDateTextView = findViewById(R.id.article_date)
         articleContentTextView = findViewById(R.id.article_content)
         articleBackButton = findViewById(R.id.article_button_back)
         articleDeleteButton = findViewById(R.id.article_delete_button)
+        articleResolveButton = findViewById(R.id.article_resolve_button)
         articleActionButton = findViewById(R.id.article_action_button)
+    }
+
+    private fun setContents(articleId: String) {
+        CoroutineScope(Dispatchers.Default).launch {
+            val snapshot = ArticleDataRepositoryDelegate
+                .repository
+                .collection
+                .document(articleId)
+                .get()
+                .await()
+            articleData = ArticleData(snapshot)
+            val author =
+                UserDataRepositoryDelegate.repository
+                    .get(articleData.authorEmail)
+                    .await()
+            userData = UserData(author)
+            runOnUiThread {
+                articleTitleTextView.text = articleData.title
+                articlePriceTextView.text = "${articleData.price}원"
+                articleAuthorTextView.text = userData.nickname
+                articleDateTextView.text = ArticleData.formatDate(
+                    Date.from(Instant.now()),
+                    articleData.uploadTime
+                )
+                articleContentTextView.text = articleData.content
+                if (userData.email == articleData.authorEmail) {
+                    articleDeleteButton.isVisible = true
+                    articleResolveButton.isVisible = true
+                    if (articleData.isResolved) {
+                        articleResolveButton.isEnabled = false
+                    }
+                }
+            }
+        }
     }
 }

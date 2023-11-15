@@ -81,9 +81,8 @@ class MainActivity : AppCompatActivity() {
                 if (activityResult.resultCode != RESULT_OK) {
                     return@registerForActivityResult
                 }
-                val intent =
-                    activityResult.data ?: return@registerForActivityResult
-                when (intent.getStringExtra("intent")) {
+                val intent = activityResult.data
+                when (intent?.getStringExtra("intent")) {
                     "signIn" -> handleSignInActivity()
                     "createUserData" -> handleCreateUserDataActivity()
                     "articlePublish", "articleDelete" -> prepareArticles()
@@ -92,6 +91,8 @@ class MainActivity : AppCompatActivity() {
                         prepareArticles()
                         startArticle(articleId)
                     }
+
+                    else -> prepareArticles()
                 }
             }
         recyclerView = findViewById(R.id.activity_main_article_view)
