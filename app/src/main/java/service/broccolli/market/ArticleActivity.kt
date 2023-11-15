@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -54,34 +55,52 @@ class ArticleActivity : AppCompatActivity() {
         }
 
         articleDeleteButton.setOnClickListener {
-            ArticleDataRepositoryDelegate.repository.collection
-                .document(articleId)
-                .delete()
-                .addOnSuccessListener {
-                    setResult(
-                        RESULT_OK,
-                        Intent()
-                            .putExtra("intent", "articleDelete")
-                            .putExtra("articleId", articleId)
-                    )
-                    finish()
+            AlertDialog.Builder(this@ArticleActivity)
+                .setMessage("삭제하시겠습니까?")
+                .setPositiveButton("예") { _, _ ->
+                    ArticleDataRepositoryDelegate.repository.collection
+                        .document(articleId)
+                        .delete()
+                        .addOnSuccessListener {
+                            setResult(
+                                RESULT_OK,
+                                Intent()
+                                    .putExtra("intent", "articleDelete")
+                                    .putExtra("articleId", articleId)
+                            )
+                            finish()
+                        }
                 }
+                .setNegativeButton("아니요") { dialog, _ ->
+                    dialog.cancel()
+                }
+                .create()
+                .show()
         }
 
         articleResolveButton.setOnClickListener {
-            ArticleDataRepositoryDelegate.repository
-                .update(
-                    articleId,
-                    articleData.title,
-                    articleData.authorEmail,
-                    articleData.content,
-                    articleData.price,
-                    true,
-                    articleData.uploadTime
-                )
-                .addOnSuccessListener {
-                    setContents(articleId)
+            AlertDialog.Builder(this@ArticleActivity)
+                .setMessage("판매를 완료하시겠습니까?")
+                .setPositiveButton("예") { _, _ ->
+                    ArticleDataRepositoryDelegate.repository
+                        .update(
+                            articleId,
+                            articleData.title,
+                            articleData.authorEmail,
+                            articleData.content,
+                            articleData.price,
+                            true,
+                            articleData.uploadTime
+                        )
+                        .addOnSuccessListener {
+                            setContents(articleId)
+                        }
                 }
+                .setNegativeButton("아니요") { dialog, _ ->
+                    dialog.cancel()
+                }
+                .create()
+                .show()
         }
 
         articleActionButton.setOnClickListener {
