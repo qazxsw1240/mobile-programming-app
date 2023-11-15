@@ -6,7 +6,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import service.broccolli.util.EditTextUtil.Companion.addContentErrorMessageChecker
-import service.firebase.ArticleData
 import service.firebase.ArticleDataRepositoryDelegate
 import service.firebase.auth.FirebaseAuthDelegate
 import java.util.Date
@@ -21,6 +20,14 @@ class ArticlePublishActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_article_publish)
         initialize()
+
+        val articleId = intent.getStringExtra("articleId")
+
+        if (articleId != null) {
+            titleEditText.setText(intent.getStringExtra("title")!!)
+            priceEditText.setText(intent.getIntExtra("price", 0).toString())
+            contentEditText.setText(intent.getStringExtra("content")!!)
+        }
 
         titleEditText.addContentErrorMessageChecker(ArticlePublishActivity::getTitleErrorMessage)
         priceEditText.addContentErrorMessageChecker(ArticlePublishActivity::getPriceErrorMessage)
@@ -39,19 +46,40 @@ class ArticlePublishActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val timestamp = Date()
-            ArticleDataRepositoryDelegate.repository.add(
-                ArticleData(
+            if (articleId == null) {
+                ArticleDataRepositoryDelegate.repository
+                    .add(
+                        title,
+                        FirebaseAuthDelegate.currentUser!!.email!!,
+                        content,
+                        price.toInt(),
+                        false,
+                        timestamp
+                    ).addOnSuccessListener {
+                        setResult(
+                            RESULT_OK,
+                            Intent().putExtra("intent", "articlePublish")
+                        )
+                        finish()
+                    }
+                return@setOnClickListener
+            }
+            ArticleDataRepositoryDelegate.repository
+                .update(
+                    articleId,
                     title,
                     FirebaseAuthDelegate.currentUser!!.email!!,
                     content,
                     price.toInt(),
                     false,
                     timestamp
-                )
-            ).addOnSuccessListener {
-                setResult(RESULT_OK, Intent().putExtra("intent", "articlePublish"))
-                finish()
-            }
+                ).addOnSuccessListener {
+                    setResult(
+                        RESULT_OK,
+                        Intent().putExtra("intent", "articleEdit")
+                    )
+                    finish()
+                }
         }
     }
 
