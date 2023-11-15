@@ -1,13 +1,18 @@
 package service.broccolli.market.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.RecyclerView
+import service.broccolli.market.ArticleActivity
 import service.broccolli.market.R
 import service.firebase.ArticleData
 
-class ArticleListItemAdapter(private val articleLIstItems: MutableList<ArticleData>) :
+class ArticleListItemAdapter(
+    private val activityResultLauncher: ActivityResultLauncher<Intent>,
+    private val articleLIstItems: MutableList<ArticleData>
+) :
     RecyclerView.Adapter<ArticleListItem>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -18,11 +23,10 @@ class ArticleListItemAdapter(private val articleLIstItems: MutableList<ArticleDa
             layoutInflater.inflate(R.layout.article_list_item, parent, false)
         val viewHolder = ArticleListItem(view)
         view.setOnClickListener {
-            Toast.makeText(
-                parent.context,
-                articleLIstItems[viewHolder.layoutPosition].title,
-                Toast.LENGTH_SHORT
-            ).show()
+            val articleListItem = articleLIstItems[viewHolder.layoutPosition]
+            val intent = Intent(parent.context, ArticleActivity::class.java)
+                .putExtra("articleId", articleListItem.id)
+            activityResultLauncher.launch(intent)
         }
         return viewHolder
     }
@@ -35,9 +39,9 @@ class ArticleListItemAdapter(private val articleLIstItems: MutableList<ArticleDa
         holder.setContents(articleLIstItems[position])
     }
 
-    fun clear() {
-        articleLIstItems.clear()
-    }
+    fun getItemList(): List<ArticleData> = articleLIstItems
+
+    fun clear() = this.articleLIstItems.clear()
 
     fun fetchItems(newArticleLIstItems: MutableList<ArticleData>) {
         articleLIstItems.addAll(newArticleLIstItems)
