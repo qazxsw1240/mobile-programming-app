@@ -49,6 +49,9 @@ class MainActivity : AppCompatActivity(),
         }
 
         articleFilterButton.setOnClickListener {
+            intent.putExtra("filterOption", filterOption)
+            intent.putExtra("minPrice", minPrice)
+            intent.putExtra("maxPrice", maxPrice)
             ArticleFilterDialog()
                 .show(
                     supportFragmentManager,
@@ -162,8 +165,19 @@ class MainActivity : AppCompatActivity(),
         }
         val maxCount = 10
         var query = ArticleDataRepositoryDelegate.repository.collection
-            .orderBy("uploadTime", Query.Direction.DESCENDING)
             .whereLessThan("uploadTime", lastItem.uploadTime)
+        minPrice?.let {
+            query = ArticleDataRepositoryDelegate.repository.collection
+                .whereGreaterThanOrEqualTo("price", it)
+                .orderBy("price", Query.Direction.ASCENDING)
+                .orderBy("uploadTime", Query.Direction.DESCENDING)
+        }
+        maxPrice?.let {
+            query = ArticleDataRepositoryDelegate.repository.collection
+                .whereLessThanOrEqualTo("price", it)
+                .orderBy("price", Query.Direction.ASCENDING)
+                .orderBy("uploadTime", Query.Direction.DESCENDING)
+        }
         when (filterOption) {
             ArticleFilterDialog.FILTER_RESOLVED_ARTICLES ->
                 query = query.whereEqualTo("isResolved", true)
@@ -171,12 +185,6 @@ class MainActivity : AppCompatActivity(),
             ArticleFilterDialog.FILTER_UNRESOLVED_ARTICLES ->
                 query = query.whereEqualTo("isResolved", false)
 
-        }
-        minPrice?.let {
-            query = query.whereGreaterThanOrEqualTo("price", it)
-        }
-        maxPrice?.let {
-            query = query.whereLessThanOrEqualTo("price", it)
         }
         query
             .limit(maxCount.toLong())
@@ -193,21 +201,36 @@ class MainActivity : AppCompatActivity(),
 
     private fun prepareArticles() {
         val maxCount = 30
-        var query = ArticleDataRepositoryDelegate.repository.collection
-            .orderBy("uploadTime", Query.Direction.DESCENDING)
-        when (filterOption) {
-            ArticleFilterDialog.FILTER_RESOLVED_ARTICLES ->
-                query = query.whereEqualTo("isResolved", true)
-
-            ArticleFilterDialog.FILTER_UNRESOLVED_ARTICLES ->
-                query = query.whereEqualTo("isResolved", false)
-
-        }
+        var query: Query =
+            ArticleDataRepositoryDelegate.repository.collection
+                .orderBy("uploadTime", Query.Direction.DESCENDING)
         minPrice?.let {
-            query = query.whereGreaterThanOrEqualTo("price", it)
+            query =
+                ArticleDataRepositoryDelegate.repository.collection
+                    .whereGreaterThanOrEqualTo("price", it)
+                    .orderBy("price", Query.Direction.ASCENDING)
+                    .orderBy("uploadTime", Query.Direction.DESCENDING)
         }
         maxPrice?.let {
-            query = query.whereLessThanOrEqualTo("price", it)
+            query = ArticleDataRepositoryDelegate.repository.collection
+                .whereLessThanOrEqualTo("price", it)
+                .orderBy("price", Query.Direction.ASCENDING)
+                .orderBy("uploadTime", Query.Direction.DESCENDING)
+        }
+        when (filterOption) {
+            ArticleFilterDialog.FILTER_RESOLVED_ARTICLES ->
+                query =
+                    query.whereEqualTo(
+                        "isResolved",
+                        true
+                    )
+
+            ArticleFilterDialog.FILTER_UNRESOLVED_ARTICLES ->
+                query =
+                    query.whereEqualTo(
+                        "isResolved",
+                        false
+                    )
         }
         query
             .limit(maxCount.toLong())

@@ -1,5 +1,6 @@
 package service.broccolli.market.fragment
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -55,6 +56,7 @@ class ArticleFilterDialog : DialogFragment() {
             val inflater = it.layoutInflater
             val view = inflater.inflate(R.layout.dialog_article_filter, null)
             initialize(view)
+            initializeFields(it)
             attachEventListeners()
             builder
                 .setView(view)
@@ -81,6 +83,46 @@ class ArticleFilterDialog : DialogFragment() {
             view.findViewById(R.id.article_filter_option2)
         articleFilterMinPrice = view.findViewById(R.id.article_filter_min_price)
         articleFilterMaxPrice = view.findViewById(R.id.article_filter_max_price)
+    }
+
+    private fun initializeFields(activity: Activity) {
+        val intent = activity.intent
+        filterOption = intent.getIntExtra("filterOption", FILTER_ALL_ARTICLES)
+        minPrice = intent.getIntExtra("minPrice", -1).let {
+            if (it < 0) {
+                return@let null
+            }
+            return@let it
+        }
+        maxPrice = intent.getIntExtra("maxPrice", -1).let {
+            if (it < 0) {
+                return@let null
+            }
+            return@let it
+        }
+
+        when (filterOption) {
+            FILTER_ALL_ARTICLES -> {
+                articleFilterOption0.isChecked = true
+                articleFilterOption1.isChecked = false
+                articleFilterOption2.isChecked = false
+            }
+
+            FILTER_UNRESOLVED_ARTICLES -> {
+                articleFilterOption0.isChecked = false
+                articleFilterOption1.isChecked = true
+                articleFilterOption2.isChecked = false
+            }
+
+            FILTER_RESOLVED_ARTICLES -> {
+                articleFilterOption0.isChecked = false
+                articleFilterOption1.isChecked = false
+                articleFilterOption2.isChecked = true
+            }
+        }
+
+        articleFilterMinPrice.setText(minPrice?.toString() ?: "")
+        articleFilterMaxPrice.setText(maxPrice?.toString() ?: "")
     }
 
     private fun attachEventListeners() {
