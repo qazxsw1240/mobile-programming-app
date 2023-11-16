@@ -5,6 +5,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import service.firebase.model.UserData
 
 class UserDataRepositoryDelegate private constructor() {
     private val database: FirebaseFirestore = Firebase.firestore

@@ -1,4 +1,4 @@
-package service.firebase
+package service.firebase.model
 
 import com.google.firebase.firestore.DocumentSnapshot
 

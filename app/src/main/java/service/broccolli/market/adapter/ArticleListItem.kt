@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import service.broccolli.market.R
-import service.firebase.ArticleData
+import service.firebase.model.ArticleData
 import java.time.Instant
 import java.util.Date
 

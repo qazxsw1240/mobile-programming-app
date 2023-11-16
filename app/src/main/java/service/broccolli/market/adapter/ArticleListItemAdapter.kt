@@ -7,7 +7,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.RecyclerView
 import service.broccolli.market.ArticleActivity
 import service.broccolli.market.R
-import service.firebase.ArticleData
+import service.firebase.model.ArticleData
 
 class ArticleListItemAdapter(
     private val activityResultLauncher: ActivityResultLauncher<Intent>,

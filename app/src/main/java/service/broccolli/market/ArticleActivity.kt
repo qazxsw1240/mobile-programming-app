@@ -15,9 +15,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import service.firebase.ArticleData
+import service.firebase.model.ArticleData
 import service.firebase.ArticleDataRepositoryDelegate
-import service.firebase.UserData
+import service.firebase.model.UserData
 import service.firebase.UserDataRepositoryDelegate
 import service.firebase.auth.FirebaseAuthDelegate
 import java.time.Instant

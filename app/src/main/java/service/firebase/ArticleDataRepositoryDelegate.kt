@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
+import service.firebase.model.ArticleData
 import java.util.Date
 
 class ArticleDataRepositoryDelegate private constructor() {

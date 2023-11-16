@@ -15,7 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.Query
 import service.broccolli.market.adapter.ArticleListItemAdapter
 import service.broccolli.market.fragment.ArticleFilterDialog
-import service.firebase.ArticleData
+import service.firebase.model.ArticleData
 import service.firebase.ArticleDataRepositoryDelegate
 import service.firebase.UserDataRepositoryDelegate
 import service.firebase.auth.FirebaseAuthDelegate
