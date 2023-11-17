@@ -3,23 +3,23 @@ package service.broccolli.market
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import service.firebase.model.ArticleData
 import service.firebase.ArticleDataRepositoryDelegate
-import service.firebase.model.UserData
 import service.firebase.UserDataRepositoryDelegate
 import service.firebase.auth.FirebaseAuthDelegate
+import service.firebase.model.ArticleData
+import service.firebase.model.UserData
 import java.time.Instant
 import java.util.Date
 
@@ -176,12 +176,15 @@ class ArticleActivity : AppCompatActivity() {
                     articleData.uploadTime
                 )
                 articleContentTextView.text = articleData.content
-                if (userData.email == articleData.authorEmail) {
-                    articleDeleteButton.isVisible = true
-                    articleResolveButton.isVisible = true
+                if (userData.email == FirebaseAuthDelegate.currentUser?.email) {
+                    articleDeleteButton.visibility = View.VISIBLE
+                    articleResolveButton.visibility = View.VISIBLE
                     if (articleData.isResolved) {
                         articleResolveButton.isEnabled = false
                     }
+                } else {
+                    articleDeleteButton.visibility = View.INVISIBLE
+                    articleResolveButton.visibility = View.INVISIBLE
                 }
             }
         }
