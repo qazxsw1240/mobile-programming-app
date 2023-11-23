@@ -27,7 +27,9 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="16dp"
+            android:background="@drawable/buttonstyle"
             android:text="게시글 골라 보기"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,9 +43,10 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
+        app:backgroundTint="@color/django_green"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/buttonstyle" />
+        app:srcCompat="@drawable/baseline_create_24" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/activity_main_article_view"
