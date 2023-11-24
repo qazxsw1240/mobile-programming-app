@@ -5,20 +5,20 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.tasks.await
 import service.firebase.model.ChatData
 import java.util.Date
 
 class ChatDataRepositoryDelegate private constructor() {
     private val database: FirebaseFirestore = Firebase.firestore
 
-    suspend fun get(
+    fun get(
         userEmail: String,
         limit: Int = 30,
         before: Date? = null
-    ): List<ChatData> {
+    ): Task<QuerySnapshot> {
         var query = database
             .collection(COLLECTION_NAME)
             .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -34,8 +34,6 @@ class ChatDataRepositoryDelegate private constructor() {
         return query
             .limit(limit.toLong())
             .get()
-            .await()
-            .map { ChatData(it) }
     }
 
     fun sendChat(
