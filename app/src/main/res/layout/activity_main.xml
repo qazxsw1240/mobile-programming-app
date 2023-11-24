@@ -48,6 +48,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/baseline_create_24" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/activity_main_article_chat_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        app:backgroundTint="@color/django_green"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_article_publish_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/fui_ic_mail_white_24dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/activity_main_article_view"
         android:layout_width="0dp"

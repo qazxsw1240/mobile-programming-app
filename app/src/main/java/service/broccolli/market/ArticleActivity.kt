@@ -15,7 +15,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import service.broccolli.market.fragment.ChatSendDialog
 import service.firebase.ArticleDataRepositoryDelegate
+import service.firebase.ChatDataRepositoryDelegate
 import service.firebase.UserDataRepositoryDelegate
 import service.firebase.auth.FirebaseAuthDelegate
 import service.firebase.model.ArticleData
@@ -23,7 +25,7 @@ import service.firebase.model.UserData
 import java.time.Instant
 import java.util.Date
 
-class ArticleActivity : AppCompatActivity() {
+class ArticleActivity : AppCompatActivity(), ChatSendDialog.ChatDialogListener {
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var articleTitleTextView: TextView
@@ -123,6 +125,11 @@ class ArticleActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             // start chat
+            ChatSendDialog()
+                .show(
+                    supportFragmentManager,
+                    "chatSendDialog"
+                )
         }
     }
 
@@ -185,8 +192,34 @@ class ArticleActivity : AppCompatActivity() {
                 } else {
                     articleDeleteButton.visibility = View.INVISIBLE
                     articleResolveButton.visibility = View.INVISIBLE
+                    articleActionButton.setImageResource(com.firebase.ui.auth.R.drawable.fui_ic_mail_white_24dp)
                 }
             }
         }
+    }
+
+    override fun onPositiveButtonClickListener(dialog: ChatSendDialog) {
+        println("test")
+        val content = dialog.content
+        val sender = FirebaseAuthDelegate.currentUser?.email!!
+        val receiver = articleData.authorEmail
+        if (sender == receiver) {
+            return
+        }
+        ChatDataRepositoryDelegate.repository
+            .sendChat(
+                sender,
+                receiver,
+                content,
+                Date.from(Instant.now())
+            )
+            .addOnSuccessListener {
+                val intent =
+                    Intent(this@ArticleActivity, ChatActivity::class.java)
+                startActivity(intent)
+            }
+    }
+
+    override fun onNegativeButtonClickListener(dialog: ChatSendDialog) {
     }
 }

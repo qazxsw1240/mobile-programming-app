@@ -15,10 +15,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.Query
 import service.broccolli.market.adapter.ArticleListItemAdapter
 import service.broccolli.market.fragment.ArticleFilterDialog
-import service.firebase.model.ArticleData
 import service.firebase.ArticleDataRepositoryDelegate
 import service.firebase.UserDataRepositoryDelegate
 import service.firebase.auth.FirebaseAuthDelegate
+import service.firebase.model.ArticleData
 import kotlin.math.min
 
 class MainActivity : AppCompatActivity(),
@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var articleFilterButton: Button
     private lateinit var articlePublishButton: FloatingActionButton
+    private lateinit var articleChatButton: FloatingActionButton
 
     private var filterOption: Int = ArticleFilterDialog.FILTER_ALL_ARTICLES
     private var minPrice: Int? = null
@@ -61,6 +62,11 @@ class MainActivity : AppCompatActivity(),
 
         articlePublishButton.setOnClickListener {
             startArticlePublishActivity()
+        }
+
+        articleChatButton.setOnClickListener {
+            val intent = Intent(this, ChatActivity::class.java)
+            startActivity(intent)
         }
 
         // auto-fetch on scroll
@@ -111,6 +117,7 @@ class MainActivity : AppCompatActivity(),
             findViewById(R.id.activity_main_article_filter_button)
         articlePublishButton =
             findViewById(R.id.activity_main_article_publish_button)
+        articleChatButton = findViewById(R.id.activity_main_article_chat_button)
     }
 
     private fun startSignInActivity() {
