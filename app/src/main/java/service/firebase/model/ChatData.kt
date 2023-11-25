@@ -1,8 +1,6 @@
 package service.firebase.model
 
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
 import java.time.Period
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -21,30 +19,7 @@ data class ChatData(
         snapshot.getDate("timestamp")!!
     )
 
-    fun toMap(): Map<String, Any> {
-        return hashMapOf(
-            "sender" to sender,
-            "receiver" to receiver,
-            "content" to content,
-            "timestamp" to FieldValue.serverTimestamp()
-        )
-    }
-
     companion object {
-        fun buildMapOf(
-            sender: String,
-            receiver: String,
-            content: String,
-            timestamp: Date
-        ): HashMap<String, Any> {
-            return hashMapOf(
-                "sender" to sender,
-                "receiver" to receiver,
-                "content" to content,
-                "timestamp" to Timestamp(timestamp)
-            )
-        }
-
         fun formatDate(now: Date, date: Date): String {
             val dateLocal = date.toInstant()
                 .atZone(ZoneId.systemDefault())

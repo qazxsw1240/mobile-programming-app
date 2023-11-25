@@ -12,8 +12,7 @@ import service.firebase.model.ArticleData
 class ArticleListItemAdapter(
     private val activityResultLauncher: ActivityResultLauncher<Intent>,
     private val articleLIstItems: MutableList<ArticleData>
-) :
-    RecyclerView.Adapter<ArticleListItem>() {
+) : RecyclerView.Adapter<ArticleListItem>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -31,13 +30,10 @@ class ArticleListItemAdapter(
         return viewHolder
     }
 
-    override fun getItemCount(): Int {
-        return articleLIstItems.size
-    }
+    override fun getItemCount(): Int = articleLIstItems.size
 
-    override fun onBindViewHolder(holder: ArticleListItem, position: Int) {
+    override fun onBindViewHolder(holder: ArticleListItem, position: Int) =
         holder.setContents(articleLIstItems[position])
-    }
 
     fun getItemList(): List<ArticleData> = articleLIstItems
 

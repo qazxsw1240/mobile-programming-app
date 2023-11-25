@@ -2,6 +2,7 @@ package service.firebase.model
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
+import java.time.Instant
 import java.time.Period
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -56,11 +57,9 @@ data class ArticleData(
             )
         }
 
-        fun formatDate(now: Date, date: Date): String {
-            val dateLocal = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-            val nowLocal = now.toInstant()
-                .atZone(ZoneId.systemDefault())
+        fun formatDate(now: Instant, date: Instant): String {
+            val dateLocal = date.atZone(ZoneId.systemDefault())
+            val nowLocal = now.atZone(ZoneId.systemDefault())
             val distance =
                 Period.between(dateLocal.toLocalDate(), nowLocal.toLocalDate())
             if (distance.days < 1) {
@@ -74,5 +73,8 @@ data class ArticleData(
             }
             return dateLocal.format(DateTimeFormatter.ofPattern("yyyy년 M월d일 HH:mm"))
         }
+
+        fun formatDate(now: Date, date: Date): String =
+            formatDate(now.toInstant(), date.toInstant())
     }
 }

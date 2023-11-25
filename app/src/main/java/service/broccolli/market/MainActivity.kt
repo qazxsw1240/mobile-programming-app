@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -21,8 +22,15 @@ import service.firebase.auth.FirebaseAuthDelegate
 import service.firebase.model.ArticleData
 import kotlin.math.min
 
-class MainActivity : AppCompatActivity(),
+class MainActivity :
+    AppCompatActivity(),
     ArticleFilterDialog.ArticleFilterListener {
+    private val articleFilterOption = ArticleFilterOption(
+        ArticleFilterDialog.FILTER_ALL_ARTICLES,
+        null,
+        null
+    )
+
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var recyclerView: RecyclerView
@@ -32,10 +40,6 @@ class MainActivity : AppCompatActivity(),
     private lateinit var articleFilterButton: Button
     private lateinit var articlePublishButton: FloatingActionButton
     private lateinit var articleChatButton: FloatingActionButton
-
-    private var filterOption: Int = ArticleFilterDialog.FILTER_ALL_ARTICLES
-    private var minPrice: Int? = null
-    private var maxPrice: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +56,13 @@ class MainActivity : AppCompatActivity(),
 
         signOutButton.setOnClickListener {
             FirebaseAuthDelegate.signOut()
-            finish()
-            startActivity(intent)
+            recreate()
         }
 
         articleFilterButton.setOnClickListener {
-            intent.putExtra("filterOption", filterOption)
-            intent.putExtra("minPrice", minPrice)
-            intent.putExtra("maxPrice", maxPrice)
+            intent.putExtra("filterOption", articleFilterOption.filterOption)
+            intent.putExtra("minPrice", articleFilterOption.minPrice)
+            intent.putExtra("maxPrice", articleFilterOption.maxPrice)
             ArticleFilterDialog()
                 .show(
                     supportFragmentManager,
@@ -90,42 +93,50 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onPositiveButtonClickListener(dialog: ArticleFilterDialog) {
-        filterOption = dialog.filterOption
-        minPrice = dialog.minPrice
-        maxPrice = dialog.maxPrice
-        println("$filterOption, $minPrice, $maxPrice")
+        articleFilterOption.filterOption = dialog.filterOption
+        articleFilterOption.minPrice = dialog.minPrice
+        articleFilterOption.maxPrice = dialog.maxPrice
         prepareArticles()
     }
 
     override fun onNegativeButtonClickListener(dialog: ArticleFilterDialog) {
+    }
 
+    private fun handleActivityForResult(activityResult: ActivityResult) {
+        if (activityResult.resultCode != RESULT_OK) {
+            return
+        }
+        val intent = activityResult.data ?: return
+        when (intent.getStringExtra("intent")) {
+            "signIn" -> handleSignInActivity()
+            "createUserData" -> handleCreateUserDataActivity()
+            "articlePublish", "articleDelete" -> prepareArticles()
+            else -> prepareArticles()
+        }
     }
 
     private fun initialize() {
         activityResultLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
-                if (activityResult.resultCode != RESULT_OK) {
-                    return@registerForActivityResult
-                }
-                val intent = activityResult.data
-                when (intent?.getStringExtra("intent")) {
-                    "signIn" -> handleSignInActivity()
-                    "createUserData" -> handleCreateUserDataActivity()
-                    "articlePublish", "articleDelete" -> prepareArticles()
-                    else -> prepareArticles()
-                }
-            }
-        recyclerView = findViewById(R.id.activity_main_article_view)
+            registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult(),
+                this::handleActivityForResult
+            )
+        recyclerView =
+            findViewById(R.id.activity_main_article_view)
         recyclerAdapter =
             ArticleListItemAdapter(activityResultLauncher, mutableListOf())
-        recyclerView.layoutManager = RecyclerViewWrapperLayoutManager(this)
-        recyclerView.adapter = recyclerAdapter
-        signOutButton = findViewById(R.id.activity_main_sign_out_button)
+        recyclerView.layoutManager =
+            RecyclerViewWrapperLayoutManager(this)
+        recyclerView.adapter =
+            recyclerAdapter
+        signOutButton =
+            findViewById(R.id.activity_main_sign_out_button)
         articleFilterButton =
             findViewById(R.id.activity_main_article_filter_button)
         articlePublishButton =
             findViewById(R.id.activity_main_article_publish_button)
-        articleChatButton = findViewById(R.id.activity_main_article_chat_button)
+        articleChatButton =
+            findViewById(R.id.activity_main_article_chat_button)
     }
 
     private fun startSignInActivity() {
@@ -141,6 +152,7 @@ class MainActivity : AppCompatActivity(),
                     startCreateUserDataActivity()
                     return@addOnSuccessListener
                 }
+                recreate()
             }
             .addOnFailureListener {
                 Log.w("BroccoliMarket", "user not found")
@@ -160,6 +172,7 @@ class MainActivity : AppCompatActivity(),
                     Log.w("BroccoliMarket", "user not found after registration")
                     return@addOnSuccessListener
                 }
+                recreate()
             }
             .addOnFailureListener {
                 Log.w("BroccoliMarket", "user not found")
@@ -181,19 +194,19 @@ class MainActivity : AppCompatActivity(),
         val maxCount = 10
         var query = ArticleDataRepositoryDelegate.repository.collection
             .whereLessThan("uploadTime", lastItem.uploadTime)
-        minPrice?.let {
+        articleFilterOption.minPrice?.let {
             query = ArticleDataRepositoryDelegate.repository.collection
                 .whereGreaterThanOrEqualTo("price", it)
                 .orderBy("price", Query.Direction.ASCENDING)
                 .orderBy("uploadTime", Query.Direction.DESCENDING)
         }
-        maxPrice?.let {
+        articleFilterOption.maxPrice?.let {
             query = ArticleDataRepositoryDelegate.repository.collection
                 .whereLessThanOrEqualTo("price", it)
                 .orderBy("price", Query.Direction.ASCENDING)
                 .orderBy("uploadTime", Query.Direction.DESCENDING)
         }
-        when (filterOption) {
+        when (articleFilterOption.filterOption) {
             ArticleFilterDialog.FILTER_RESOLVED_ARTICLES ->
                 query = query.whereEqualTo("isResolved", true)
 
@@ -219,20 +232,20 @@ class MainActivity : AppCompatActivity(),
         var query: Query =
             ArticleDataRepositoryDelegate.repository.collection
                 .orderBy("uploadTime", Query.Direction.DESCENDING)
-        minPrice?.let {
+        articleFilterOption.minPrice?.let {
             query =
                 ArticleDataRepositoryDelegate.repository.collection
                     .whereGreaterThanOrEqualTo("price", it)
                     .orderBy("price", Query.Direction.ASCENDING)
                     .orderBy("uploadTime", Query.Direction.DESCENDING)
         }
-        maxPrice?.let {
+        articleFilterOption.maxPrice?.let {
             query = ArticleDataRepositoryDelegate.repository.collection
                 .whereLessThanOrEqualTo("price", it)
                 .orderBy("price", Query.Direction.ASCENDING)
                 .orderBy("uploadTime", Query.Direction.DESCENDING)
         }
-        when (filterOption) {
+        when (articleFilterOption.filterOption) {
             ArticleFilterDialog.FILTER_RESOLVED_ARTICLES ->
                 query =
                     query.whereEqualTo(
@@ -295,4 +308,10 @@ class MainActivity : AppCompatActivity(),
             }
         }
     }
+
+    private data class ArticleFilterOption(
+        var filterOption: Int,
+        var minPrice: Int?,
+        var maxPrice: Int?
+    )
 }
