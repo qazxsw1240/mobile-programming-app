@@ -12,50 +12,67 @@
         android:layout_height="40dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="480dp"
         android:background="@drawable/edittextstyle"
         android:elevation="40dp"
         android:ems="10"
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.666"
-        app:layout_constraintStart_toEndOf="@+id/email_text_view"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.432" />
+        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintStart_toEndOf="@+id/email_text_view" />
 
     <EditText
         android:id="@+id/sign_in_password_edit_text"
         android:layout_width="246dp"
         android:layout_height="40dp"
         android:layout_marginStart="11dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/edittextstyle"
         android:elevation="40dp"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.69"
         app:layout_constraintStart_toEndOf="@+id/password_text_view"
         app:layout_constraintTop_toBottomOf="@+id/sign_in_email_address_edit_text"
-        app:layout_constraintVertical_bias="0.006" />
+        app:layout_constraintVertical_bias="0.007" />
 
     <TextView
         android:id="@+id/email_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="128dp"
         android:fontFamily="sans-serif-black"
-        android:text="이메일(Email)"
+        android:text="이메일"
+        android:textColor="#131313"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.436" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/password_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="48dp"
+        android:fontFamily="sans-serif-black"
+        android:text="비밀번호"
+        android:textColor="#131313"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email_text_view"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/signup_button"
         android:layout_width="102dp"
-        android:layout_height="27dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/buttonstyle"
         android:fontFamily="sans-serif-black"
         android:text="회원가입"
@@ -65,25 +82,15 @@
         app:layout_constraintHorizontal_bias="0.948"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_in_password_edit_text"
-        app:layout_constraintVertical_bias="0.05" />
-
-    <TextView
-        android:id="@+id/password_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="68dp"
-        android:fontFamily="sans-serif-black"
-        android:text="비밀번호(Password)"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_text_view"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/signin_button"
-        android:layout_width="279dp"
+        android:layout_width="0dp"
         android:layout_height="64dp"
+        android:layout_marginStart="128dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginBottom="64dp"
         android:background="@drawable/buttonstyle"
         android:fontFamily="sans-serif-black"
         android:text="로그인"
@@ -91,22 +98,19 @@
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_button"
-        app:layout_constraintVertical_bias="0.736" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="250dp"
         android:layout_height="200dp"
         android:layout_marginTop="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/sign_in_email_address_edit_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.102"
         app:srcCompat="@drawable/logo_market_broccolli_radius" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
