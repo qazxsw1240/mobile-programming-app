@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerAdapter: ArticleListItemAdapter
 
+    private lateinit var signOutButton: Button
     private lateinit var articleFilterButton: Button
     private lateinit var articlePublishButton: FloatingActionButton
     private lateinit var articleChatButton: FloatingActionButton
@@ -47,6 +48,12 @@ class MainActivity : AppCompatActivity(),
             // start auth steps
             startSignInActivity()
             return
+        }
+
+        signOutButton.setOnClickListener {
+            FirebaseAuthDelegate.signOut()
+            finish()
+            startActivity(intent)
         }
 
         articleFilterButton.setOnClickListener {
@@ -113,6 +120,7 @@ class MainActivity : AppCompatActivity(),
             ArticleListItemAdapter(activityResultLauncher, mutableListOf())
         recyclerView.layoutManager = RecyclerViewWrapperLayoutManager(this)
         recyclerView.adapter = recyclerAdapter
+        signOutButton = findViewById(R.id.activity_main_sign_out_button)
         articleFilterButton =
             findViewById(R.id.activity_main_article_filter_button)
         articlePublishButton =
