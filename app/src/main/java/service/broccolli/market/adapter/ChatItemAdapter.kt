@@ -12,8 +12,7 @@ class ChatItemAdapter(
     private val activity: Activity,
     private val chatItems: MutableList<ChatData>,
     private val listener: (chatItem: ChatData) -> Unit
-) :
-    RecyclerView.Adapter<ChatItem>() {
+) : RecyclerView.Adapter<ChatItem>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -35,9 +34,8 @@ class ChatItemAdapter(
 
     override fun getItemCount(): Int = chatItems.size
 
-    override fun onBindViewHolder(holder: ChatItem, position: Int) {
+    override fun onBindViewHolder(holder: ChatItem, position: Int) =
         holder.setContents(chatItems[position])
-    }
 
     fun getItemList(): List<ChatData> = chatItems
 

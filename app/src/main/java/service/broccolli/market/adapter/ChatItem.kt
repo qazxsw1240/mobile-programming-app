@@ -14,16 +14,13 @@ import java.util.Date
 
 class ChatItem(
     private val activity: Activity,
-    private val view: View
+    view: View
 ) : RecyclerView.ViewHolder(view) {
-    private lateinit var senderView: TextView
-    private lateinit var timeView: TextView
-    private lateinit var chatContentView: TextView
+    private var senderView: TextView = view.findViewById(R.id.chat_sender)
+    private var timeView: TextView = view.findViewById(R.id.chat_time)
+    private var chatContentView: TextView = view.findViewById(R.id.chat_content)
 
     fun setContents(chatData: ChatData) {
-        senderView = view.findViewById(R.id.chat_sender)
-        timeView = view.findViewById(R.id.chat_time)
-        chatContentView = view.findViewById(R.id.chat_content)
         initialize(chatData)
     }
 
