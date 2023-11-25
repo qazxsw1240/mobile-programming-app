@@ -8,111 +8,96 @@
     tools:layout_editor_absoluteX="-8dp"
     tools:layout_editor_absoluteY="10dp">
 
-    <EditText
-        android:id="@+id/sign_up_password_check_edit_text"
-        android:layout_width="246dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/edittextstyle"
-        android:elevation="40dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/password_check_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_password_edit_text"
-        app:layout_constraintVertical_bias="0.013" />
-
-    <EditText
-        android:id="@+id/sign_up_email_address_edit_text"
-        android:layout_width="246dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="508dp"
-        android:background="@drawable/edittextstyle"
-        android:elevation="40dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/email_text_view" />
-
-    <TextView
-        android:id="@+id/password_check_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
-        android:fontFamily="sans-serif-black"
-        android:text="비밀번호 확인"
-        android:textColor="#131313"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_text_view"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/password_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
-        android:fontFamily="sans-serif-black"
-        android:text="비밀번호"
-        android:textColor="#131313"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_text_view"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <EditText
-        android:id="@+id/sign_up_password_edit_text"
-        android:layout_width="246dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/edittextstyle"
-        android:elevation="40dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/password_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_email_address_edit_text"
-        app:layout_constraintVertical_bias="0.015" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_market_broccolli_radius" />
 
     <TextView
         android:id="@+id/email_text_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="128dp"
         android:fontFamily="sans-serif-black"
+        android:gravity="center_vertical"
         android:text="이메일"
         android:textColor="#131313"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-    <Button
-        android:id="@+id/sign_up_cancel_button"
-        android:layout_width="162dp"
-        android:layout_height="60dp"
-        android:background="@drawable/buttonstyle"
+    <TextView
+        android:id="@+id/password_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="sans-serif-black"
-        android:text="취소"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center_vertical"
+        android:text="비밀번호"
+        android:textColor="#131313"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email_text_view" />
+
+    <TextView
+        android:id="@+id/password_check_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center_vertical"
+        android:text="비밀번호 확인"
+        android:textColor="#131313"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_text_view" />
+
+    <EditText
+        android:id="@+id/sign_up_email_address_edit_text"
+        android:layout_width="240dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edittextstyle"
+        android:elevation="40dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/sign_up_signup_button"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_password_check_edit_text"
-        app:layout_constraintVertical_bias="0.689" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <EditText
+        android:id="@+id/sign_up_password_edit_text"
+        android:layout_width="240dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edittextstyle"
+        android:elevation="40dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_email_address_edit_text" />
+
+    <EditText
+        android:id="@+id/sign_up_password_check_edit_text"
+        android:layout_width="240dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edittextstyle"
+        android:elevation="40dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_password_edit_text" />
 
     <Button
         android:id="@+id/sign_up_signup_button"
@@ -122,6 +107,7 @@
         android:fontFamily="sans-serif-black"
         android:text="회원가입"
         android:textColor="#FFFFFF"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/sign_up_cancel_button"
         app:layout_constraintHorizontal_bias="0.5"
@@ -129,15 +115,20 @@
         app:layout_constraintTop_toBottomOf="@+id/sign_up_password_check_edit_text"
         app:layout_constraintVertical_bias="0.692" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="250dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="50dp"
+    <Button
+        android:id="@+id/sign_up_cancel_button"
+        android:layout_width="162dp"
+        android:layout_height="60dp"
+        android:background="@drawable/buttonstyle"
+        android:fontFamily="sans-serif-black"
+        android:text="취소"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo_market_broccolli_radius" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/sign_up_signup_button"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_password_check_edit_text"
+        app:layout_constraintVertical_bias="0.689" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
