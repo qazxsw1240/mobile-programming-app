@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,7 +40,15 @@ class SignInActivity : AppCompatActivity() {
                             Intent().putExtra("intent", "signIn")
                         )
                         finish()
+                        return@addOnCompleteListener
                     }
+                    Toast
+                        .makeText(
+                            this@SignInActivity,
+                            "로그인하지 못했습니다.",
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
                 }
         }
     }
