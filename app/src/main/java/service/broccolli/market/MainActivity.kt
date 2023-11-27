@@ -41,6 +41,7 @@ class MainActivity :
     private lateinit var articleFilterButton: Button
     private lateinit var articlePublishButton: FloatingActionButton
     private lateinit var articleChatButton: FloatingActionButton
+    private lateinit var articleRefreshButton: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +79,10 @@ class MainActivity :
         articleChatButton.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
             startActivity(intent)
+        }
+
+        articleRefreshButton.setOnClickListener {
+            prepareArticles()
         }
 
         // auto-fetch on scroll
@@ -138,6 +143,8 @@ class MainActivity :
             findViewById(R.id.activity_main_article_publish_button)
         articleChatButton =
             findViewById(R.id.activity_main_article_chat_button)
+        articleRefreshButton =
+            findViewById(R.id.activity_main_refresh_button)
     }
 
     private fun startSignInActivity() {
