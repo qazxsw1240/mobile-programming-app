@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.Query
 import service.broccolli.market.adapter.ArticleListItemAdapter
 import service.broccolli.market.fragment.ArticleFilterDialog
@@ -40,6 +41,7 @@ class MainActivity :
     private lateinit var articleFilterButton: Button
     private lateinit var articlePublishButton: FloatingActionButton
     private lateinit var articleChatButton: FloatingActionButton
+    private lateinit var articleRefreshButton: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +79,10 @@ class MainActivity :
         articleChatButton.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
             startActivity(intent)
+        }
+
+        articleRefreshButton.setOnClickListener {
+            prepareArticles()
         }
 
         // auto-fetch on scroll
@@ -137,6 +143,8 @@ class MainActivity :
             findViewById(R.id.activity_main_article_publish_button)
         articleChatButton =
             findViewById(R.id.activity_main_article_chat_button)
+        articleRefreshButton =
+            findViewById(R.id.activity_main_refresh_button)
     }
 
     private fun startSignInActivity() {
@@ -194,17 +202,19 @@ class MainActivity :
         val maxCount = 10
         var query = ArticleDataRepositoryDelegate.repository.collection
             .whereLessThan("uploadTime", lastItem.uploadTime)
+        val filters = mutableListOf<Filter>()
         articleFilterOption.minPrice?.let {
-            query = ArticleDataRepositoryDelegate.repository.collection
-                .whereGreaterThanOrEqualTo("price", it)
-                .orderBy("price", Query.Direction.ASCENDING)
-                .orderBy("uploadTime", Query.Direction.DESCENDING)
+            filters.add(Filter.greaterThanOrEqualTo("price", it))
         }
         articleFilterOption.maxPrice?.let {
+            filters.add(Filter.lessThanOrEqualTo("price", it))
+        }
+        if (filters.isNotEmpty()) {
             query = ArticleDataRepositoryDelegate.repository.collection
-                .whereLessThanOrEqualTo("price", it)
+                .where(Filter.and(*filters.toTypedArray()))
                 .orderBy("price", Query.Direction.ASCENDING)
                 .orderBy("uploadTime", Query.Direction.DESCENDING)
+                .startAfter(lastItem.uploadTime)
         }
         when (articleFilterOption.filterOption) {
             ArticleFilterDialog.FILTER_RESOLVED_ARTICLES ->
@@ -232,16 +242,16 @@ class MainActivity :
         var query: Query =
             ArticleDataRepositoryDelegate.repository.collection
                 .orderBy("uploadTime", Query.Direction.DESCENDING)
+        val filters = mutableListOf<Filter>()
         articleFilterOption.minPrice?.let {
-            query =
-                ArticleDataRepositoryDelegate.repository.collection
-                    .whereGreaterThanOrEqualTo("price", it)
-                    .orderBy("price", Query.Direction.ASCENDING)
-                    .orderBy("uploadTime", Query.Direction.DESCENDING)
+            filters.add(Filter.greaterThanOrEqualTo("price", it))
         }
         articleFilterOption.maxPrice?.let {
+            filters.add(Filter.lessThanOrEqualTo("price", it))
+        }
+        if (filters.isNotEmpty()) {
             query = ArticleDataRepositoryDelegate.repository.collection
-                .whereLessThanOrEqualTo("price", it)
+                .where(Filter.and(*filters.toTypedArray()))
                 .orderBy("price", Query.Direction.ASCENDING)
                 .orderBy("uploadTime", Query.Direction.DESCENDING)
         }
