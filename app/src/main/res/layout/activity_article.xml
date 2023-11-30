@@ -119,7 +119,7 @@
         android:layout_marginBottom="24dp"
         android:clickable="true"
         android:src="@drawable/baseline_create_24"
-        app:backgroundTint="@color/django_green"
+        app:backgroundTint="#E62E7D32"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
