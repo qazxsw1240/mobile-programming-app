@@ -230,6 +230,7 @@ class MainActivity :
             .addOnSuccessListener { snapshot ->
                 val articleDataList =
                     snapshot.map { ArticleData(it) }.toMutableList()
+                articleDataList.sortByDescending { it.uploadTime }
                 attachArticles(articleDataList, false)
             }
             .addOnFailureListener {
@@ -276,6 +277,7 @@ class MainActivity :
             .addOnSuccessListener { snapshot ->
                 val articleDataList =
                     snapshot.map { ArticleData(it) }.toMutableList()
+                articleDataList.sortByDescending { it.uploadTime }
                 attachArticles(articleDataList)
             }
             .addOnFailureListener {
